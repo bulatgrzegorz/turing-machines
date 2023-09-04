@@ -1,7 +1,7 @@
 ﻿using turing_machines;
 
 var c = new ConsoleTapeVisualizer();
-var machineRunner = new MachineRunner(KnownMachines.IncreasingRunsOfOnesSeparatedByZeros);
+var machineRunner = new MachineRunner(KnownMachines.IncreasingNumberInPlace);
 // machineRunner.Move(KnownMachines.IncreasingRunsOfOnesSeparatedByZeros);
 
 var state = MachineRunner.MachineState.Empty;

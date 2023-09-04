@@ -11,5 +11,11 @@
     <PackageReference Include="OneOf" Version="3.0.255" />
     <PackageReference Include="Spectre.Console" Version="0.47.0" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(MSBuildProjectName).tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 
 </Project>
