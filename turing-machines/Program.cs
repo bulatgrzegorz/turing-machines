@@ -1,6 +1,8 @@
 ﻿using System.Collections;
-using Behaviour = System.Collections.Generic.IDictionary<Symbol, (Operation[] operations, char finalMConfig)>;
-using static KnownOperations;
+using OneOf;
+using OneOf.Types;
+
+namespace turing_machines;
 
 public static class KnownOperations
 {
@@ -23,84 +25,148 @@ public static class KnownMachines
     public static readonly Machine[] IncreasingRunsOfOnesSeparatedByZeros = {
         new('b', new Dictionary<Symbol, (Operation[], char)>()
         {
-            { Symbol.None, (new[] { PutSchwa, Right, PutSchwa, Right, PutZero, Right, Right, PutZero, Left, Left }, 'o') },
+            { Symbol.None, (new[] { KnownOperations.PutSchwa, KnownOperations.Right, KnownOperations.PutSchwa, KnownOperations.Right, KnownOperations.PutZero, KnownOperations.Right, KnownOperations.Right, KnownOperations.PutZero, KnownOperations.Left, KnownOperations.Left }, 'o') },
         }),
         new('o', new Dictionary<Symbol, (Operation[], char)>()
         {
-            { Symbol.One, (new[] { Right, PutX, Left, Left, Left }, 'o') },
+            { Symbol.One, (new[] { KnownOperations.Right, KnownOperations.PutX, KnownOperations.Left, KnownOperations.Left, KnownOperations.Left }, 'o') },
             { Symbol.Zero, (Array.Empty<Operation>(), 'q') },
         }),
         new('q', new Dictionary<Symbol, (Operation[], char)>()
         {
-            { Symbol.ZeroOrOne, (new[] { Right, Right }, 'q') },
-            { Symbol.None, (new[] { PutOne, Left }, 'p') },
+            { Symbol.ZeroOrOne, (new[] { KnownOperations.Right, KnownOperations.Right }, 'q') },
+            { Symbol.None, (new[] { KnownOperations.PutOne, KnownOperations.Left }, 'p') },
         }),
         new('p', new Dictionary<Symbol, (Operation[], char)>()
         {
-            { Symbol.X, (new[] { Erase, Right }, 'q') },
-            { Symbol.Schwa, (new[] { Right }, 'f') },
-            { Symbol.None, (new[] { Left, Left }, 'p') },
+            { Symbol.X, (new[] { KnownOperations.Erase, KnownOperations.Right }, 'q') },
+            { Symbol.Schwa, (new[] { KnownOperations.Right }, 'f') },
+            { Symbol.None, (new[] { KnownOperations.Left, KnownOperations.Left }, 'p') },
         }),
         new('f', new Dictionary<Symbol, (Operation[], char)>()
         {
-            { Symbol.Any, (new[] { Right, Right }, 'f') },
-            { Symbol.None, (new[] { PutZero, Left, Left }, 'o') },
+            { Symbol.Any, (new[] { KnownOperations.Right, KnownOperations.Right }, 'f') },
+            { Symbol.None, (new[] { KnownOperations.PutZero, KnownOperations.Left, KnownOperations.Left }, 'o') },
+        }),
+    };
+
+    public static readonly Machine[] Something =
+    {
+        new('b', new Dictionary<Symbol, (Operation[] operations, char finalMConfig)>()
+        {
+            { Symbol.None, (new[] { KnownOperations.PutZero }, 'i') }
+        }),
+        new('i', new Dictionary<Symbol, (Operation[] operations, char finalMConfig)>()
+        {
+            { Symbol.Zero, (new[] { KnownOperations.PutOne }, 'r') },
+            { Symbol.One, (new[] { KnownOperations.PutZero, KnownOperations.Left }, 'i') },
+            { Symbol.None, (new[] { KnownOperations.PutOne }, 'r') },
+        }),
+        new('r', new Dictionary<Symbol, (Operation[] operations, char finalMConfig)>()
+        {
+            { Symbol.None, (new[] { KnownOperations.Left }, 'i') },
+            { Symbol.Any, (new[] { KnownOperations.Right }, 'r') },
         }),
     };
 }
 
 public class MachineRunner
 {
-    private readonly ITapeVisualizer _tapeVisualizer;
+    public readonly struct MachineState
+    {
+        public Tape Tape { get; }
+        public readonly char? MachineSymbol;
+        public readonly Symbol? BehaviourSymbol;
+        public readonly int? OperationIndex;
+        public readonly bool ShouldContinue;
+
+        public MachineState(Tape tape, Symbol? behaviourSymbol, int? operationIndex, bool shouldContinue, char? machineSymbol)
+        {
+            Tape = tape;
+            BehaviourSymbol = behaviourSymbol;
+            OperationIndex = operationIndex;
+            ShouldContinue = shouldContinue;
+            MachineSymbol = machineSymbol;
+        }
+        
+        public static MachineState Empty => new(new Tape(), null, null, true, null);
+        public static MachineState NewMachine(Tape tape, char machineSymbol) => new(tape, null, null, true, machineSymbol);
+        public static MachineState NoContinuation(Tape tape) => new(tape, null, null, false, null);
+    }
     
-    public MachineRunner(ITapeVisualizer tapeVisualizer)
+    private readonly Machine[] _machines;
+    
+    public MachineRunner(Machine[] machines)
     {
-        _tapeVisualizer = tapeVisualizer;
+        _machines = machines;
     }
 
-    //TODO: Starting symbol could be optional, we can find first one 
-    public void Run(Machine[] machines, char startingSymbol)
+    public OneOf<MachineState, Error<string>> Move(MachineState state)
     {
-        var tape = new Tape();
-        var symbol = startingSymbol;
-        while (true)
+        var symbolMachine = FindMachine(_machines, state.Tape.Current, state.MachineSymbol);
+        if (symbolMachine == null)
         {
-            var symbolMachine = machines.Single(x => x.MConfig == symbol);
-
-            foreach (var (x, y) in symbolMachine.Behaviours)
-            {
-                if (!CompareSymbol(x, tape.Current)) continue;
-                
-                var shouldContinue = DoOperations(ref tape, y.operations);
-                if (!shouldContinue)
-                {
-                    return;
-                }
-
-                symbol = y.finalMConfig;
-
-                break;
-            }
+            return new Error<string>(state.MachineSymbol.HasValue ? $"There is no machine with symbol: {state.MachineSymbol.Value}" : $"There is no machine for current tape symbol: {state.Tape.Current}");
         }
+
+        if (state.BehaviourSymbol.HasValue)
+        {
+            return DoBehaviour(symbolMachine, state.BehaviourSymbol.Value, state.Tape, state.OperationIndex ?? 0);
+        }
+
+        foreach (var (behaviourSymbol, _) in symbolMachine.Behaviours)
+        {
+            if (!CompareSymbol(behaviourSymbol, state.Tape.Current)) continue;
+
+            return DoBehaviour(symbolMachine, behaviourSymbol, state.Tape, state.OperationIndex ?? 0);
+        }
+
+        return new Error<string>($"Any behaviour of machine with symbol {symbolMachine.MConfig} has matched. Configuration of machine may be invalid");
     }
 
-    private bool DoOperations(ref Tape tape, Operation[] operations)
+    private static Machine? FindMachine(Machine[] machines, char currentTapeElement, char? symbol = null)
     {
-        foreach (var operation in operations)
-        {
-            switch (operation.Type)
-            {
-                case OperationType.Halt: return false;
-                case OperationType.Erase: tape.SetValue('\0'); break;
-                case OperationType.Put: tape.SetValue(operation.Symbol!.Value); break;
-                case OperationType.MoveLeft: tape.MoveLeft(); break;
-                case OperationType.MoveRight: tape.MoveRight(); break;
-                default: throw new ArgumentOutOfRangeException(nameof(OperationType), operation.Type, "Given operation type is not supported.");
-            }
+        return symbol.HasValue ? 
+            machines.SingleOrDefault(x => x.MConfig == symbol) : 
+            machines.FirstOrDefault(x => x.Behaviours.Any(y => CompareSymbol(y.Key, currentTapeElement)));
+    }
 
-            _tapeVisualizer.PrintTape(tape);
+    private static MachineState DoBehaviour(Machine machine, Symbol behaviourSymbol, Tape tape, int operationIndex)
+    {
+        var behaviour = machine.Behaviours[behaviourSymbol];
+        if (behaviour.operations.Length == 0)
+        {
+            return MachineState.NewMachine(tape, behaviour.finalMConfig);
         }
 
+        return DoBehaviour(machine, behaviourSymbol, tape, operationIndex, behaviour);
+    }
+
+    private static MachineState DoBehaviour(Machine machine, Symbol behaviourSymbol, Tape tape, int operationIndex, (Operation[] operations, char finalMConfig) behaviour)
+    {
+        var shouldContinue = DoOperation(ref tape, behaviour.operations[operationIndex]);
+        if (!shouldContinue)
+        {
+            return MachineState.NoContinuation(tape);
+        }
+
+        return behaviour.operations.Length > operationIndex + 1
+            ? new MachineState(tape, behaviourSymbol, operationIndex + 1, true, machine.MConfig)
+            : MachineState.NewMachine(tape, behaviour.finalMConfig);
+    }
+
+    private static bool DoOperation(ref Tape tape, Operation operation)
+    {
+        switch (operation.Type)
+        {
+            case OperationType.Halt: return false;
+            case OperationType.Erase: tape.SetValue('\0'); break;
+            case OperationType.Put: tape.SetValue(operation.Symbol!.Value); break;
+            case OperationType.MoveLeft: tape.MoveLeft(); break;
+            case OperationType.MoveRight: tape.MoveRight(); break;
+            default: throw new ArgumentOutOfRangeException(nameof(OperationType), operation.Type, "Given operation type is not supported.");
+        }
+        
         return true;
     }
 
@@ -108,19 +174,17 @@ public class MachineRunner
     {
         return symbol switch
         {
-            Symbol.One => value == One,
-            Symbol.Zero => value == Zero,
-            Symbol.ZeroOrOne => value is Zero or One,
-            Symbol.X => value == Ex,
-            Symbol.Schwa => value == Schwa,
-            Symbol.None => value == NullTerminator,
-            Symbol.Any => value != NullTerminator,
+            Symbol.One => value == KnownOperations.One,
+            Symbol.Zero => value == KnownOperations.Zero,
+            Symbol.ZeroOrOne => value is KnownOperations.Zero or KnownOperations.One,
+            Symbol.X => value == KnownOperations.Ex,
+            Symbol.Schwa => value == KnownOperations.Schwa,
+            Symbol.None => value == KnownOperations.NullTerminator,
+            Symbol.Any => value != KnownOperations.NullTerminator,
             _ => throw new ArgumentOutOfRangeException(nameof(symbol), symbol, null)
         };
     }
 }
-
-
 
 public enum Symbol
 {
@@ -144,7 +208,7 @@ public enum OperationType
 
 public struct Tape : IEnumerable<char>
 {
-    private const int DefaultSize = 2;//1024;
+    private const int DefaultSize = 1024;
     
     public Tape()
     {
@@ -152,10 +216,10 @@ public struct Tape : IEnumerable<char>
         CurrentIndex = 0;
         Capacity = 0;
     }
-    private char[] InternalTape { get; set; }
     public int CurrentIndex { get; private set; }
-    private int Capacity { get; set; }
     public char Current => InternalTape[CurrentIndex];
+    private char[] InternalTape { get; set; }
+    private int Capacity { get; set; }
     public void SetValue(char value) => InternalTape[CurrentIndex] = value;
     public void MoveLeft() => CurrentIndex -= 1;
     public void MoveRight()
@@ -172,26 +236,6 @@ public struct Tape : IEnumerable<char>
         }
     }
 
-    public void Print()
-    {
-        Console.WriteLine();
-        Console.Write('|');
-        for (var i = 0; i < Capacity + 1; i++)
-        {
-            if (i == CurrentIndex)
-            {
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.BackgroundColor = ConsoleColor.White;
-            }
-            Console.Write(InternalTape[i]);
-            if (i == CurrentIndex)
-            {
-                Console.ResetColor();
-            }
-            Console.Write('|');
-        }
-    }
-
     public IEnumerator<char> GetEnumerator()
     {
         for (var i = 0; i < Capacity + 1; i++)
@@ -203,9 +247,5 @@ public struct Tape : IEnumerable<char>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
-public interface ITapeVisualizer
-{
-    void PrintTape(Tape tape);
-}
 public record Operation(OperationType Type, char? Symbol = null);
 public record Machine(char MConfig, IDictionary<Symbol, (Operation[] operations, char finalMConfig)> Behaviours);
