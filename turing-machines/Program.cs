@@ -50,7 +50,7 @@ public static class KnownMachines
         }),
     };
 
-    public static readonly Machine[] Something =
+    public static readonly Machine[] IncreasingNumberInPlace =
     {
         new('b', new Dictionary<Symbol, (Operation[] operations, char finalMConfig)>()
         {
@@ -216,12 +216,32 @@ public struct Tape : IEnumerable<char>
         CurrentIndex = 0;
         Capacity = 0;
     }
-    public int CurrentIndex { get; private set; }
+
+    public int CurrentIndex { get; set; }
     public char Current => InternalTape[CurrentIndex];
     private char[] InternalTape { get; set; }
     private int Capacity { get; set; }
-    public void SetValue(char value) => InternalTape[CurrentIndex] = value;
-    public void MoveLeft() => CurrentIndex -= 1;
+    public void SetValue(char value)
+    {
+        InternalTape[CurrentIndex] = value;    
+    }
+    
+    public void MoveLeft()
+    {
+        if (CurrentIndex == 0)
+        {
+            Capacity++;
+            
+            var tmp = new char[InternalTape.Length];
+            Array.Copy(InternalTape, 0, tmp, 1, Capacity);
+            InternalTape = tmp;
+        }
+        else
+        {
+            CurrentIndex -= 1;   
+        }
+    }
+
     public void MoveRight()
     {
         CurrentIndex += 1;
@@ -229,10 +249,10 @@ public struct Tape : IEnumerable<char>
         
         if (CurrentIndex >= InternalTape.Length)
         {
-            var tape = InternalTape;
-            Array.Resize(ref tape, InternalTape.Length * 2);
+            var tmp = InternalTape;
+            Array.Resize(ref tmp, InternalTape.Length * 2);
 
-            InternalTape = tape;
+            InternalTape = tmp;
         }
     }
 
