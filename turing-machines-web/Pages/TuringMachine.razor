@@ -1,0 +1,116 @@
+﻿@page "/"
+@using turing_machines
+
+<PageTitle>Turing Machine</PageTitle>
+
+<h1>Machine</h1>
+
+<MudSelect ValueChanged="SelectedMachineChanged" T="string" Label="Machine type" AnchorOrigin="Origin.BottomCenter">
+    <MudSelectItem Value="@(KnownMachineNames.IncreasingRunsOfOnesSeparatedByZeros)" />
+    <MudSelectItem Value="@(KnownMachineNames.Something)" />
+</MudSelect>
+
+<MudGrid Spacing="1" Justify="Justify.FlexStart" class="border-solid border mud-border-primary">
+    @for (var i = 0; i < _currentTape.Length; i++)
+    {
+        var character = _currentTape[i];
+        if (i == _currentIndex)
+        {
+            <MudItem>
+                <MudPaper Style="text-align: center" height="40px" width="30px" class="pa-2 mud-theme-primary border-solid border-2 mud-border-primary">
+                    <MudText Style="font-weight: bold">@character</MudText>
+                </MudPaper>
+            </MudItem>
+        }
+        else
+        {
+            <MudItem>
+                <MudPaper Style="text-align: center" height="40px" width="30px" class="pa-2 border-solid border-2 mud-border-primary">
+                    <MudText Style="font-weight: bold">@character</MudText>
+                </MudPaper>
+            </MudItem>
+        }
+    }
+</MudGrid>
+
+<MudButton Disabled="MoveButtonDisabled" Class="ma-3" Variant="Variant.Filled" Color="@Color.Primary" OnClick="@Move">Move</MudButton>
+<button @onclick="Move">Move</button>
+
+@code {
+    private MachineRunner? _machineRunner;
+    private bool MoveButtonDisabled => _machineRunner == null;
+    private char[] _currentTape = Array.Empty<char>();
+    private int _currentIndex;
+    private MachineRunner.MachineState _state = MachineRunner.MachineState.Empty;
+
+    private void Move()
+    {
+        if (_machineRunner == null)
+        {
+            return;
+        }
+        
+        var result = _machineRunner.Move(_state);
+        if (result.IsT1)
+        {
+            Console.WriteLine(result.AsT1.Value);
+            return;
+        }
+
+        if (!result.AsT0.ShouldContinue)
+        {
+            return;
+        }
+
+        _state = result.AsT0;
+
+        Print(_state.Tape);
+    }
+    
+    private void Print(Tape tape)
+    {
+        InvokeAsync(() =>
+        {
+            _currentTape = tape.ToArray();
+            _currentIndex = tape.CurrentIndex;
+        });
+        
+        StateHasChanged();
+    }
+    
+    protected override void OnInitialized()
+    {
+        // _machineRunner = new MachineRunner(KnownMachines.IncreasingRunsOfOnesSeparatedByZeros);
+    }
+
+    private static class KnownMachineNames
+    {
+        public const string IncreasingRunsOfOnesSeparatedByZeros = "Increasing runs of ones separated by zeros";
+        public const string Something = "Something";
+
+        public static Machine[] NameToMachine(string name) => name switch {
+            IncreasingRunsOfOnesSeparatedByZeros => KnownMachines.IncreasingRunsOfOnesSeparatedByZeros,
+            Something => KnownMachines.Something,
+            _ => throw new ArgumentOutOfRangeException(nameof(name), name, null)
+            };
+    }
+
+    private Task SelectedMachineChanged(string arg)
+    {
+        var machine = KnownMachineNames.NameToMachine(arg);
+        return InvokeAsync(() =>
+        {
+            _machineRunner = new MachineRunner(machine);
+            _currentTape = Array.Empty<char>();
+            _currentIndex = 0;
+        });
+    }
+
+}
+
+
+<style>
+    td {
+      border-style: solid;
+    }
+</style>

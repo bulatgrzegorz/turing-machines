@@ -1,11 +1,34 @@
-﻿var machineRunner = new MachineRunner(new ConsoleTapeVisualizer());
-machineRunner.Run(KnownMachines.IncreasingRunsOfOnesSeparatedByZeros, 'b');
+﻿using turing_machines;
 
-class ConsoleTapeVisualizer : ITapeVisualizer
+var c = new ConsoleTapeVisualizer();
+var machineRunner = new MachineRunner(KnownMachines.IncreasingRunsOfOnesSeparatedByZeros);
+// machineRunner.Move(KnownMachines.IncreasingRunsOfOnesSeparatedByZeros);
+
+var state = MachineRunner.MachineState.Empty;
+while (true)
+{
+    var result = machineRunner.Move(state);
+    if (result.IsT1)
+    {
+        Console.WriteLine(result.AsT1.Value);
+        return -1;
+    }
+
+    if (!result.AsT0.ShouldContinue)
+    {
+        return 0;
+    }
+
+    state = result.AsT0;
+
+    c.PrintTape(state.Tape);
+}
+
+class ConsoleTapeVisualizer
 {
     public void PrintTape(Tape tape)
     {
-        Thread.Sleep(500);
+        // Thread.Sleep(500);
         
         var cursorPosition = Console.GetCursorPosition();
         
