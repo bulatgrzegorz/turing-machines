@@ -217,7 +217,7 @@ public struct Tape : IEnumerable<char>
         Capacity = 0;
     }
 
-    public int CurrentIndex { get; set; }
+    public int CurrentIndex { get; private set; }
     public char Current => InternalTape[CurrentIndex];
     private char[] InternalTape { get; set; }
     private int Capacity { get; set; }
@@ -233,6 +233,8 @@ public struct Tape : IEnumerable<char>
             Capacity++;
             
             var tmp = new char[InternalTape.Length];
+            //In case of moving left from index 0 we need to shift elements right to make place for new one, again on index 0
+            //TODO: In case of performance problems we should choose different solution - like keep negative array as separate tape and join them later or to calculate some shift on runtime
             Array.Copy(InternalTape, 0, tmp, 1, Capacity);
             InternalTape = tmp;
         }
@@ -267,5 +269,9 @@ public struct Tape : IEnumerable<char>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
-public record Operation(OperationType Type, char? Symbol = null);
+public record Operation(OperationType Type, char? Symbol = null)
+{
+    public string DisplayValue() => Symbol.HasValue ? $"{Type.ToString()}({Symbol})" : Type.ToString();
+
+}
 public record Machine(char MConfig, IDictionary<Symbol, (Operation[] operations, char finalMConfig)> Behaviours);

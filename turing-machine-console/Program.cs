@@ -2,7 +2,6 @@
 
 var c = new ConsoleTapeVisualizer();
 var machineRunner = new MachineRunner(KnownMachines.IncreasingNumberInPlace);
-// machineRunner.Move(KnownMachines.IncreasingRunsOfOnesSeparatedByZeros);
 
 var state = MachineRunner.MachineState.Empty;
 while (true)
@@ -28,8 +27,6 @@ class ConsoleTapeVisualizer
 {
     public void PrintTape(Tape tape)
     {
-        // Thread.Sleep(500);
-        
         var cursorPosition = Console.GetCursorPosition();
         
         Console.WriteLine();
