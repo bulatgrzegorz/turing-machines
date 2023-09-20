@@ -8,6 +8,7 @@
 <MudSelect ValueChanged="SelectedMachineChanged" T="string" Label="Machine type" AnchorOrigin="Origin.BottomCenter">
     <MudSelectItem Value="@(KnownMachineNames.IncreasingRunsOfOnesSeparatedByZeros)" />
     <MudSelectItem Value="@(KnownMachineNames.IncreasingNumberInPlace)" />
+    <MudSelectItem Value="@(KnownMachineNames.SquareRootOf2)" />
 </MudSelect>
 
 @if(_machines != null){
@@ -194,10 +195,12 @@
     {
         public const string IncreasingRunsOfOnesSeparatedByZeros = "Increasing runs of ones separated by zeros";
         public const string IncreasingNumberInPlace = "Increasing number in place";
+        public const string SquareRootOf2 = "Square root of 2";
 
         public static Machine[] NameToMachine(string name) => name switch {
             IncreasingRunsOfOnesSeparatedByZeros => KnownMachines.IncreasingRunsOfOnesSeparatedByZeros,
             IncreasingNumberInPlace => KnownMachines.IncreasingNumberInPlace,
+            SquareRootOf2 => KnownMachines.SquareRootOf2,
             _ => throw new ArgumentOutOfRangeException(nameof(name), name, null)
             };
     }
