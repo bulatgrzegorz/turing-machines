@@ -29,7 +29,7 @@
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-3M3bbxlwLZNSyJxat0Jq0gaZI7tiztzAUA+hkg0+4w8=",
       "MudBlazor.wasm": "sha256-ORRf2K71yOLqz2xVewYte6fjJOKfNf+QS1Lstly8Ij0=",
       "netstandard.wasm": "sha256-60yallItzvJh4pIowD1r5fgJnK7QVb3SzHFah4dqbPM=",
-      "OneOf.wasm": "sha256-cSCnlHd31h36DJuyRZoyjWa2Ji1cKArhx2aDxJoGvqQ=",
+      "OneOf.wasm": "sha256-tf7kgNktFKGLy8YdEkN2Euh9dR4u\/HaZ+Gozsy0Dx30=",
       "Spectre.Console.wasm": "sha256-tRO87IJ31xR\/MSvobmcM4kI9eF30MhG3tpOAxLThqRw=",
       "System.Collections.Concurrent.wasm": "sha256-yD4XFoMyYBUUaYm\/ceMn70FHSltSw50fvSkhFAnHK1A=",
       "System.Collections.NonGeneric.wasm": "sha256-ZdxXslkoOYQnTUb\/JTQVb2qNxUT8xu5RmGtZgojgd14=",
@@ -59,8 +59,8 @@
       "System.Threading.Thread.wasm": "sha256-SbLEJ3YdMmDZBytvMgzLXs0Giyo9ytsXmfb7QqelePw=",
       "System.Threading.wasm": "sha256-0dWUZ2Xp2QnR\/h8hI3L8vzOLtqjO8BYL8cO72kuPxyw=",
       "System.wasm": "sha256-ba6DGbSamsnvsyLtiVz9gE8v+R\/3epmf6UG3BKgvLbY=",
-      "turing-machines-web.wasm": "sha256-jv\/HSmOKSa7I7UEpOGXakb9t9Qp\/AVAfN+9kqkyRmR0=",
-      "turing-machines.wasm": "sha256-2DA4Dw3SstRu4eWeKL1OyRqgjjErw9w6mp0uEgo3uiY="
+      "turing-machines-web.wasm": "sha256-xLMZ82AQiZbFDZDA9Ne5RssnfGjIrYN8yxCfi\/OLaNU=",
+      "turing-machines.wasm": "sha256-3YtN256LqmjDSnP1gVHRloyhBBJwQ14JQdSdU08DvNo="
     },
     "extensions": null,
     "lazyAssembly": null,
