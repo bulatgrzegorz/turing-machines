@@ -59,8 +59,8 @@
       "System.Threading.Thread.wasm": "sha256-SbLEJ3YdMmDZBytvMgzLXs0Giyo9ytsXmfb7QqelePw=",
       "System.Threading.wasm": "sha256-0dWUZ2Xp2QnR\/h8hI3L8vzOLtqjO8BYL8cO72kuPxyw=",
       "System.wasm": "sha256-ba6DGbSamsnvsyLtiVz9gE8v+R\/3epmf6UG3BKgvLbY=",
-      "turing-machines-web.wasm": "sha256-ZJdN\/joVXBe8YRkR8iiP2nF8M+Jjzuk56EGlK0+wJE8=",
-      "turing-machines.wasm": "sha256-Jv9SUCOBZ\/8qDYo8p69H2QkQbIpAQMINZuGCn2VbRKE="
+      "turing-machines-web.wasm": "sha256-QpGQEP5vQUIicCkTPKxQuY4n9ViZ2Tm25m9uMGIBvqk=",
+      "turing-machines.wasm": "sha256-OvpE+nzr\/aJ\/Q0OwROutsAdWlebROoaMhNadB\/33wwQ="
     },
     "extensions": null,
     "lazyAssembly": null,
