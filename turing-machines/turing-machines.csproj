@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OneOf" Version="3.0.255" />
+    <PackageReference Include="OneOf" Version="3.0.263" />
     <PackageReference Include="Spectre.Console" Version="0.47.0" />
   </ItemGroup>
   
