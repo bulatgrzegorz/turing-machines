@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "turing-machines-web",
   "resources": {
-    "hash": "sha256-RggKDpNCQKNOrUIYHMKUixT2dY9NM4Itz3rCdYoGhnU=",
+    "hash": "sha256-LBqbRbfzMqb1x72CH8LLlqXobws1oJnFVBOswnSc5ec=",
     "jsModuleNative": {
       "dotnet.native.8.0.0.45ykigla5r.js": "sha256-LjLDIz9+J7uuiwMlQ4HbNx2BnSpphOtO2MwkoI28vdI="
     },
@@ -34,7 +34,7 @@
       "Microsoft.Extensions.Primitives.wasm": "sha256-Ms2HR5Gpug/0uRAzdk4SUNT76Ml3CjFv9Jo+dUIMGac=",
       "Microsoft.JSInterop.wasm": "sha256-EtJO0POenyod5M2fB0fS97fOwqWAHYxciSYpGqqItvE=",
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-CQVLCKiSxLN5ghyJZG3mhnMGRROdqrbNUjtAXB0nWb8=",
-      "MudBlazor.wasm": "sha256-NLnFrlNqiWQKOK80bK33vNJYWj0AW+k/vYdITGlm8kg=",
+      "MudBlazor.wasm": "sha256-4t8qpWudDvYx2XtH4+l0cDJesvfki0Xx2AAE3Pzys3I=",
       "netstandard.wasm": "sha256-bJgaRlORNuWhkFYZaddt04Nuoy5HLjm2l0YEjKX1mZ4=",
       "OneOf.wasm": "sha256-tf7kgNktFKGLy8YdEkN2Euh9dR4u/HaZ+Gozsy0Dx30=",
       "Spectre.Console.wasm": "sha256-tRO87IJ31xR/MSvobmcM4kI9eF30MhG3tpOAxLThqRw=",
@@ -67,8 +67,8 @@
       "System.Threading.Thread.wasm": "sha256-NPpUNdDLx4/XBczSDmsecaz7lp94ebIF8COrffBg3pM=",
       "System.Threading.wasm": "sha256-/jCkUykNaO486/HFCP2UZ+N1F/Hq0S52rExPAgdLIXU=",
       "System.wasm": "sha256-42a4+5LjOVNJZ9qrtuq44hJuXPS03tHmXb7Kauk7pEg=",
-      "turing-machines-web.wasm": "sha256-AqoIWffDT8iFPTw1jpFa+eDHs/CO2I8DXQwEmysKPcs=",
-      "turing-machines.wasm": "sha256-vDUkCCQgFeU7RUEmnZBjWOMYCyMTLP2PYlvlYt7je4o="
+      "turing-machines-web.wasm": "sha256-/TgZpPALo7EOgH4CsXAf6SWCpfJvYQzpKuU7U7LlfHo=",
+      "turing-machines.wasm": "sha256-B91sgkHrWwoRQdnBFW+e0isvjbr03J9lk2+OQXpCELc="
     }
   },
   "cacheBootResources": true,
