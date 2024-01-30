@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "turing-machines-web",
   "resources": {
-    "hash": "sha256-0BGuq8qhUlGfCH5ZGPwazGmdemdmkjN2OWouST66AGM=",
+    "hash": "sha256-L9dvZiZyIFK5mcavC85RavpvntbGhiCtMTmNCdaTx2I=",
     "jsModuleNative": {
       "dotnet.native.8.0.1.ahpp78valh.js": "sha256-SGOlISx+3G4kkvpC9Uq3qoPGsnjxGmW61QBev0lyI5U="
     },
@@ -67,8 +67,8 @@
       "System.Threading.Thread.wasm": "sha256-XW1CQip+aokAaGfDZznJ4qcFUIdnX9DTHACUCFBxZfE=",
       "System.Threading.wasm": "sha256-4qx9QX/ABL4bxIMTMtDKZ85x4a8VxLwp5tfOvkqdVug=",
       "System.wasm": "sha256-VcEDE6pOk70XKMQ28ZpXByBb3BywZlGf2e3G/xiAMhI=",
-      "turing-machines-web.wasm": "sha256-aS9nfVpFR4YP8+1Sc13AHzaUEz0/+cq7s/29JGZs7/k=",
-      "turing-machines.wasm": "sha256-khc2AU/nMpAPvFpkTOJJtgAO6cjM48tG8dmRU9JH+90="
+      "turing-machines-web.wasm": "sha256-3MMYUYSjUFekTjEDkO+evcmEy1UpKMmhZJnGmyFJ5ks=",
+      "turing-machines.wasm": "sha256-yfh4m2t3MEw2DAk1/eSzlb30Sj8Wwxn1zjomdK2Hk0w="
     }
   },
   "cacheBootResources": true,
